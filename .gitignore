@@ -1,7 +1,14 @@
 
 /target/
 **/*.rs.bk
+Cargo.lock
 
 compat/build
 .idea/
 xmr.iml
+crypto/sys/build/
+crypto/sys/int-util.h.bk
+
+#mac
+.DS_Store
+**/.DS_Store
