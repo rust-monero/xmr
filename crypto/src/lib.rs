@@ -8,9 +8,12 @@
 
 extern crate libc;
 
+use std::ffi::c_void;
 use std::mem::transmute;
+use std::os::raw::c_char;
 use std::thread;
-use libc::{c_void, c_char, size_t};
+
+use libc::size_t;
 
 mod ffi;
 
@@ -22,7 +25,7 @@ pub fn fast_hash(data: &[u8]) -> [u8; FAST_HASH_LENGTH] {
 
     debug_assert!(FAST_HASH_LENGTH == ffi::HASH_SIZE);
 
-    let output = &mut [0u8; FAST_HASH_LENGTH];    
+    let output = &mut [0u8; FAST_HASH_LENGTH];
     unsafe {
         cn_fast_hash(
             data.as_ptr() as *const c_void,
@@ -45,7 +48,7 @@ pub fn slow_hash(data: &[u8]) -> [u8; SLOW_HASH_LENGTH] {
     let data_len = data.len() as size_t;
 
     let child = thread::Builder::new().stack_size(4194304).spawn(move || {
-        let output = &mut [0u8; FAST_HASH_LENGTH];    
+        let output = &mut [0u8; FAST_HASH_LENGTH];
         unsafe {
             cn_slow_hash(
                 transmute::<usize, *const c_void>(data_ptr),
